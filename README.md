@@ -10,7 +10,6 @@ This repository does not use Third Party Tools.
 
 ```
 $ ./tasks.ts
-matchDenoVersion
 build
 test
 dev
@@ -22,7 +21,6 @@ or
 
 ```
 $ deno run tasks.ts
-matchDenoVersion
 build
 test
 dev

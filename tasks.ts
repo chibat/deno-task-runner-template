@@ -2,11 +2,7 @@
 
 import { deno } from "./tasks_utils.ts";
 
-const TASKS = [matchDenoVersion, build, test, dev, start, deploy];
-
-async function matchDenoVersion() {
-  await deno("upgrade", ["--version=1.10.2"]);
-}
+const TASKS = [build, test, dev, start, deploy];
 
 async function start() {
   // write start script
