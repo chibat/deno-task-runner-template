@@ -1,5 +1,21 @@
 import { existsSync } from "https://deno.land/std@0.93.0/fs/exists.ts";
 
+export async function main(tasks: (()=> Promise<void>)[]) {
+  const taskName = Deno.args[0];
+  if (!taskName) {
+    tasks.forEach((task) => console.log(task.name));
+    Deno.exit(0);
+  }
+  const task = tasks.find((task) => task.name === taskName);
+  if (task) {
+    await task();
+  } else {
+    console.log("Unknown task name");
+    Deno.exit(1);
+  }
+}
+
+
 export async function $(cmd: string[]) {
   const status = await Deno.run({
     cmd,

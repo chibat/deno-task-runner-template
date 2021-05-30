@@ -1,8 +1,9 @@
 #!/usr/bin/env -S deno run -A
 
-import { deno } from "./tasks_utils.ts";
+import { deno, main } from "./tasks_utils.ts";
 
 const TASKS = [build, test, dev, start, deploy];
+await main(TASKS);
 
 async function start() {
   // write start script
@@ -32,17 +33,4 @@ async function dev() {
 
 async function deploy() {
   // write deploy script
-}
-
-const taskName = Deno.args[0];
-if (!taskName) {
-  TASKS.forEach((task) => console.log(task.name));
-  Deno.exit(0);
-}
-const task = TASKS.find((task) => task.name === taskName);
-if (task) {
-  await task();
-} else {
-  console.log("Unknown task name");
-  Deno.exit(1);
 }
