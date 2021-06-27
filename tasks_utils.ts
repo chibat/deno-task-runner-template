@@ -1,12 +1,12 @@
 import { existsSync } from "https://deno.land/std@0.99.0/fs/exists.ts";
 
-export async function main(tasks: (() => Promise<void>)[]) {
+export async function tasks(...taskArgs: (() => Promise<void>)[]) {
   const taskName = Deno.args[0];
   if (!taskName) {
-    tasks.forEach((task) => console.log(task.name));
+    taskArgs.forEach((task) => console.log(task.name));
     Deno.exit(0);
   }
-  const task = tasks.find((task) => task.name === taskName);
+  const task = taskArgs.find((task) => task.name === taskName);
   if (task) {
     await task();
   } else {

@@ -1,9 +1,8 @@
 #!/usr/bin/env -S deno run -A
 
-import { deno, main } from "./tasks_utils.ts";
+import { deno, tasks } from "./tasks_utils.ts";
 
-const TASKS = [build, test, dev, start, deploy];
-await main(TASKS);
+await tasks(build, test, dev, start, deploy);
 
 async function start() {
   // write start script
