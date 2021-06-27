@@ -31,7 +31,7 @@ deploy
 ### run task
 
 ```
-$ ./tasks start
+$ ./tasks.ts start
 ```
 
 or
