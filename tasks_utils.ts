@@ -15,7 +15,7 @@ export async function tasks(...taskArgs: (() => Promise<void>)[]) {
   }
 }
 
-export async function $(cmd: string[]) {
+export async function $(cmd: string[]): Promise<void> {
   const status = await Deno.run({
     cmd,
     stdout: "inherit",
@@ -43,52 +43,22 @@ export async function denoDir() {
   return JSON.parse(output).denoDir;
 }
 
-class DenoCommand {
-  cmd = [Deno.execPath()];
-  run() {
-    this.cmd = this.cmd.concat("run");
-    return this;
-  }
-  param(name: string, ...values: string[]) {
-    this.cmd = this.cmd.concat(name + "=" + values.join(","));
-    return this;
-  }
+type DenoOptions = {
+  command: "run" | "cache";
+  "--allow-read"?: string[];
+  "--allow-net"?: string[];
+  args: string[];
+};
 
-  allowRead(...values: string[]) {
-    return this.param("--allow-read", ...values);
+export async function deno(options: DenoOptions): Promise<void> {
+  const cmd = [Deno.execPath()];
+  cmd.push(options.command);
+  if (options["--allow-read"]) {
+    cmd.push("--allow-read" + "=" + options["--allow-read"].join(","));
   }
-
-  allowWrite(...values: string[]) {
-    return this.param("--allow-write", ...values);
+  if (options["--allow-net"]) {
+    cmd.push("--allow-net" + "=" + options["--allow-net"].join(","));
   }
-
-  allowEnv(...values: string[]) {
-    return this.param("--allow-env", ...values);
-  }
-
-  allowNet(...values: string[]) {
-    return this.param("--allow-net", ...values);
-  }
-
-  allowRun(...values: string[]) {
-    return this.param("--allow-run", ...values);
-  }
-
-  args(...values: string[]) {
-    this.cmd = this.cmd.concat(values);
-    return this;
-  }
-
-  async execute() {
-    await $(this.cmd);
-  }
-
-  noCheck() {
-    this.cmd = this.cmd.concat("--no-check");
-    return this;
-  }
-}
-
-export function deno() {
-  return new DenoCommand();
+  cmd.push(...options.args);
+  await $(cmd);
 }

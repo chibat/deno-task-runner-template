@@ -8,17 +8,17 @@ async function start() {
   // write start script
 
   const PORT = 4507;
-  await deno()
-    .run()
-    .allowRead(Deno.cwd())
-    .allowNet(":" + PORT)
-    .args(
+  await deno({
+    command: "run",
+    "--allow-read": [Deno.cwd()],
+    "--allow-net": [":" + PORT],
+    args: [
       "https://deno.land/std@0.99.0/http/file_server.ts",
       "public",
       "--host=localhost",
       "--port=" + PORT,
-    )
-    .execute();
+    ],
+  });
 }
 
 async function build() {
