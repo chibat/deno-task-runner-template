@@ -45,20 +45,32 @@ export async function denoDir() {
 
 type DenoOptions = {
   command: "run" | "cache";
-  "--allow-read"?: string[];
-  "--allow-net"?: string[];
+  "--allow-read"?: string[] | boolean;
+  "--allow-write"?: string[] | boolean;
+  "--allow-net"?: string[] | boolean;
+  "--allow-env"?: string[] | boolean;
+  "--allow-run"?: string[] | boolean;
   args: string[];
 };
+
+function arrayOption(cmd: string[], name: string, option?: string[] | boolean) {
+  if (option) {
+    if (option instanceof Array && option.length > 0) {
+      cmd.push(name + "=" + option.join(","));
+    } else if (option === true) {
+      cmd.push(name);
+    }
+  }
+}
 
 export async function deno(options: DenoOptions): Promise<void> {
   const cmd = [Deno.execPath()];
   cmd.push(options.command);
-  if (options["--allow-read"]) {
-    cmd.push("--allow-read" + "=" + options["--allow-read"].join(","));
-  }
-  if (options["--allow-net"]) {
-    cmd.push("--allow-net" + "=" + options["--allow-net"].join(","));
-  }
+  arrayOption(cmd, "--allow-read", options["--allow-read"]);
+  arrayOption(cmd, "--allow-write", options["--allow-write"]);
+  arrayOption(cmd, "--allow-net", options["--allow-net"]);
+  arrayOption(cmd, "--allow-env", options["--allow-env"]);
+  arrayOption(cmd, "--allow-run", options["--allow-run"]);
   cmd.push(...options.args);
   await $(cmd);
 }
